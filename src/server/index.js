@@ -9,5 +9,5 @@ const server = app.listen(port, () => {
   console.log('server is run on port ', port);
 });
 
-const io = socketIo(server);
+const io = socketIo(server, { wsEngine: 'ws' });
 io.on('connection', socketManager);

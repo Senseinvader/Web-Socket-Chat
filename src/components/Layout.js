@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import USER_CONNECTED from '../Events';
+import { USER_CONNECTED, LOGOUT } from '../Events';
+import LoginForm from './LoginForm';
 
 const socketUrl = "http://localhost:3001";
+const socketIo = io(socketUrl);
 export default class Layout extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      socket: null
+      socket: socketIo
     }
   }
 
@@ -17,28 +19,30 @@ export default class Layout extends Component {
   }
 
   initSocket = () => {
-    const socket = io(socketUrl);
-    socket.on('connect', () => {
-      console.log('Connected');
-    });
-    this.setState = ({ socket });
+    socketIo.on('connect', () => {
+      console.log('Connected to' + socketIo.id);
+    });  
   }
 
   userLogin = (user) => {
     const {socket} = this.state;
-    socket.emit(USER_CONNECTED);
-    this.setState({user: user});
+    socket.emit(USER_CONNECTED, user);
+    this.setState({user});
   }
 
   userLogout = () => {
-    this.setState({user: null})
+    const {socket} = this.state;
+    socket.emit(LOGOUT);
+    this.setState({user: null});
   }
 
   render() {
     const { title } = this.props;
+    const { socket } = this.state;
     return (
       <div>
         { title }
+        <LoginForm socket={socket} userLogin={this.userLogin}/>
       </div>
     )
   }

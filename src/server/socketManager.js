@@ -1,5 +1,5 @@
-const io = require('./index');
+const io = require('./index').io;
 
 module.exports = function(socket) {
-  console.log(socket.id);
+  console.log('socket id' + socket.id);
 }

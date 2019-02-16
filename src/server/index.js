@@ -1,11 +1,13 @@
-const app = require('http');
-const io = module.exports.io = require('socket.io');
-const socketManager = require('./socketManeger');
+const app = require('http').createServer();
+// const io = module.exports.io = require('socket.io')(app);
+const socketIo = require('socket.io');
+const socketManager = require('./socketManager');
 
-const port = process.env.POST || 3000;
+const port = process.env.POST || 3001;
 
-io.on('connection', socketManager);
-
-app.createServer(port, () => {
+const server = app.listen(port, () => {
   console.log('server is run on port ', port);
 });
+
+const io = socketIo(server);
+io.on('connection', socketManager);

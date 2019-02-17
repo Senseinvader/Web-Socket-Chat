@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import { Drawer, Hidden, List, ListItem, ListItemText, ListItemIcon, Typography } from '@material-ui/core';
+import { Drawer, Hidden, List, ListItem, ListItemText, ListItemIcon, ListItemSecondaryAction, IconButton, Typography, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import ExitIcon from '@material-ui/icons/ExitToApp';
 
 const drawerWidth = 480;
 
@@ -10,6 +11,11 @@ const styles = theme => ({
   root: {
     display: 'flex',
   },
+  list: {
+    width: '100%',
+    backgroundColor: theme.palette.background.paper,
+  },
+  toolbar: theme.mixins.toolbar,
   drawer: {
     [theme.breakpoints.up('sm')]: {
       width: drawerWidth,
@@ -19,7 +25,20 @@ const styles = theme => ({
 });
 
 class SideBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      search: ''
+    }
+  }
+
   
+  handleChange = ({target: {value}}) => {
+    this.setState({
+      search: value
+    })
+  }
+
   render() {
     const { 
       user,
@@ -33,15 +52,36 @@ class SideBar extends Component {
 
     const drawer = (
       <div>
+        <form onSubmit={this.handleSubmit}>
+          <TextField
+            label="Search"
+            onChange={this.handleChange}
+            margin="normal"
+          />
+        </form>
         <List>
-
+          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <ListItem button key={text}>
+              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+        <List>
+          <ListItem>
+            <ListItemText primary={`${user.name}`} ></ListItemText>
+            <ListItemSecondaryAction>
+              <IconButton onClick={logout}>
+                <ExitIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
         </List>
       </div>
     );
 
     return (
       <nav className={classes.drawer}>
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
           <Drawer
             container={this.props.container}
@@ -71,4 +111,4 @@ class SideBar extends Component {
   }
 }
 
-export default withStyles(styles)(SideBar);
+export default withStyles(styles, { withTheme: true })(SideBar);

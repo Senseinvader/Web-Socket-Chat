@@ -60,7 +60,7 @@ class ChatContainer extends Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" noWrap>
-              Responsive drawer of the chat
+              Awesome chat
             </Typography>
           </Toolbar>
         </AppBar>

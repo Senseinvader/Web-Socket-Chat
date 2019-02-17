@@ -25,6 +25,10 @@ class LoginForm extends Component {
     }
   }
 
+  componentWillUnmount() {
+    
+  }
+
   handleChange = ({target: {value}}) => {
     console.log(this.props, this.props.socket.id)
     this.setState({

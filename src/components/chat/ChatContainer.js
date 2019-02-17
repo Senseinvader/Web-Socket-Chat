@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import SideBar from './SideBar';
-import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core';
+import Messages from './Messages'
+import MessageInput from './MessageInput'
+import { AppBar, Toolbar, IconButton, Typography, Paper } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -44,6 +46,16 @@ class ChatContainer extends Component {
     this.setState(state => ({mobileOpen: !state.mobileOpen}));
   }
 
+  sendMessage = (chatId, message) => {
+    const { socket } = this.props;
+    socket.emit('MESSAGE_SENT', {chatId, message});
+  }
+
+  sendTyping = (chatId, isTyping) => {
+    const { socket } = this.props;
+    socket.emit('TYPING', {chatId, isTyping});
+  }
+
   render() {
     const { user, logout, classes } = this.props;
     const { chats, activeChat, mobileOpen } = this.state;
@@ -64,6 +76,32 @@ class ChatContainer extends Component {
             </Typography>
           </Toolbar>
         </AppBar>
+        <main>
+          {
+            activeChat ? (
+              <Fragment>
+                <Messages
+                  messages={activeChat.messages}
+                  typingUsers={activeChat.typingUsers}
+                  user={user}
+                />
+                <MessageInput
+                  sendMessage = {message => {
+                    this.sendMessage(activeChat.id, message)
+                  }}
+                  sendTyping = {(isTyping) => {
+                    this.sendTyping(activeChat.id, isTyping)
+                  }}
+                />
+              </Fragment>
+            ) :
+            <Paper>
+              h<Typography variant='h4'>Choose a chat!</Typography>
+            </Paper>
+          }
+        </main>
+
+
         <SideBar 
           user={user}
           logout={logout}

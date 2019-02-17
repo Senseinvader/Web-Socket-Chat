@@ -1,16 +1,11 @@
-import React, { Component, Fragment } from 'react';
-import { Drawer, Hidden, List, ListItem, ListItemText, ListItemIcon, ListItemSecondaryAction, IconButton, Typography, TextField } from '@material-ui/core';
+import React, { Component } from 'react';
+import { Drawer, Hidden, Avatar, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 
-const drawerWidth = 480;
+const drawerWidth = 240;
 
 const styles = theme => ({
-  root: {
-    display: 'flex',
-  },
   list: {
     width: '100%',
     backgroundColor: theme.palette.background.paper,
@@ -22,6 +17,16 @@ const styles = theme => ({
       flexShrink: 0,
     },
   },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  search: {
+    paddingLeft: 15
+  },
+  userpanel: {
+    position: 'fixed',
+    bottom: theme.spacing.unit
+  }
 });
 
 class SideBar extends Component {
@@ -42,8 +47,8 @@ class SideBar extends Component {
   render() {
     const { 
       user,
-      activeUser,
-      setActiveUser,
+      activeChat,
+      setActiveChat,
       chats,
       logout,
       mobileOpen,
@@ -52,7 +57,7 @@ class SideBar extends Component {
 
     const drawer = (
       <div>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} className={classes.search}>
           <TextField
             label="Search"
             onChange={this.handleChange}
@@ -60,16 +65,34 @@ class SideBar extends Component {
           />
         </form>
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          {chats.map((chat) => {
+            if(chat.name) {
+              const user = chat.users.find(({name}) => {
+                return name !== user.name
+              }) || {name: 'Community'};
+              const lastMessage = chat.messages[chat.messages.length - 1];
+              const classNames = (activeChat && activeChat.id === chat.id) ? 'active' : '';
+              return (
+                <ListItem
+                  key={chat.id}
+                  className = {`${classNames}`}
+                  onClick = { () => { setActiveChat(chat) } }
+                >
+                  <Avatar>
+                    {user.name[0].toUpperCase()}
+                  </Avatar>
+                  <ListItemText primary={user.name} secondary={lastMessage} />
+                </ListItem>
+              );
+            }
+            return null;
+          }
+          )}
         </List>
-        <List>
-          <ListItem>
-            <ListItemText primary={`${user.name}`} ></ListItemText>
+        <Divider />
+        <List className={classes.userpanel}>
+          <ListItem >
+            <ListItemText primary={`${user.name}`}></ListItemText>
             <ListItemSecondaryAction>
               <IconButton onClick={logout}>
                 <ExitIcon />

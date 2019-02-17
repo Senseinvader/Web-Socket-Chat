@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import SideBar from './SideBar';
 import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -31,7 +31,7 @@ class ChatContainer extends Component {
     super(props);
     this.state = {
       chats: [],
-      activeUser: null,
+      activeChat: null,
       mobileOpen: false
     }
   }

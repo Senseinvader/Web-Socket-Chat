@@ -1,7 +1,7 @@
 const io = require('./index').io;
 const {createUser, createMessage, createChat} = require('../Factories');
 
-const connectedUsers = {};
+let connectedUsers = {};
 
 module.exports = function(socket) {
   console.log('socket id ' + socket.id);
@@ -13,7 +13,14 @@ module.exports = function(socket) {
     } else {
       cb({isUser: false, user: createUser({name:username})})
     }
-  })
+  });
+
+  socket.on('USER_CONNECTED', (user) => {
+    connectedUsers = addUser(connectedUsers, user);
+    socket.user = user;
+    socket.emit('USER_CONNECTED', connectedUsers);
+    console.log(connectedUsers);
+  });
 }
 
 function isUser(connectedUsers, username) {

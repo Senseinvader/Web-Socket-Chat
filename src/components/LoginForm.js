@@ -7,9 +7,11 @@ const styles = ({
     padding: '2px 4px',
     display: 'flex',
     justifyContent: 'center',
-    minWidth: 600,
     paddingTop: '10%'
   },
+  dence: {
+    padding: 15,
+  }
 });
 
 class LoginForm extends Component {
@@ -33,11 +35,10 @@ class LoginForm extends Component {
   setUser = ({isUser, user}) => {
     console.log(user, isUser);
     if (isUser) {
-      console.log('this name is taken')
       this.setError('This name is taken');
     } else {
-      console.log('This name is free')
       this.props.setUser(user);
+      this.setError('');
     }
   }
 
@@ -60,8 +61,8 @@ class LoginForm extends Component {
     return (
       <Fragment>
         <Grid className={classes.root} container >
-          <Grid item sm={12} md={6} style={{textAlign: "center"}}>
-            <Paper >
+          <Grid item sm={12} xs={12} md={6} style={{textAlign: "center"}}>
+            <Paper className={classes.dence}>
               <Typography variant='h4' gutterBottom>
                 Hello, new user!
               </Typography>
@@ -72,7 +73,7 @@ class LoginForm extends Component {
                   onChange={this.handleChange}
                   margin="normal"
                 />
-                <div>{error ? error : null}</div>
+                <Typography style={{color: "red"}}>{error ? error : null}</Typography>
               </form>
             </Paper>
           </Grid>

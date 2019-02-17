@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { USER_CONNECTED, LOGOUT } from '../Events';
 import LoginForm from './LoginForm';
 
 const socketUrl = "http://localhost:3001";
@@ -26,13 +25,13 @@ export default class Layout extends Component {
 
   setUser = (user) => {
     const {socket} = this.state;
-    socket.emit(USER_CONNECTED, user);
+    socket.emit('USER_CONNECTED', user);
     this.setState({user});
   }
 
   userLogout = () => {
     const {socket} = this.state;
-    socket.emit(LOGOUT);
+    socket.emit('LOGOUT');
     this.setState({user: null});
   }
 

@@ -21,7 +21,7 @@ export default class Layout extends Component {
   initSocket = () => {
     socketIo.on('connect', () => {
       console.log('Connected to' + this.state.socket.id);
-    });  
+    });
   }
 
   setUser = (user) => {

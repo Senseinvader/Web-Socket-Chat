@@ -1,13 +1,14 @@
 import React, { Component, Fragment } from 'react'
-import { TextField, Paper, Grid } from '@material-ui/core';
+import { TextField, Paper, Grid, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = ({
   root: {
     padding: '2px 4px',
     display: 'flex',
-    alignItems: 'center',
-    width: 500,
+    justifyContent: 'center',
+    minWidth: 600,
+    paddingTop: '10%'
   },
 });
 
@@ -58,12 +59,15 @@ class LoginForm extends Component {
     const { classes } = this.props;
     return (
       <Fragment>
-        <Grid className={classes.root} container>
-          <Grid item xs={6}>
+        <Grid className={classes.root} container >
+          <Grid item sm={12} md={6} style={{textAlign: "center"}}>
             <Paper >
+              <Typography variant='h4' gutterBottom>
+                Hello, new user!
+              </Typography>
               <form onSubmit={this.handleSubmit}>
                 <TextField
-                  label="Name"
+                  label="Your Name"
                   value={name}
                   onChange={this.handleChange}
                   margin="normal"

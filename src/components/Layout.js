@@ -20,11 +20,11 @@ export default class Layout extends Component {
 
   initSocket = () => {
     socketIo.on('connect', () => {
-      console.log('Connected to' + socketIo.id);
+      console.log('Connected to' + this.state.socket.id);
     });  
   }
 
-  userLogin = (user) => {
+  setUser = (user) => {
     const {socket} = this.state;
     socket.emit(USER_CONNECTED, user);
     this.setState({user});
@@ -42,7 +42,7 @@ export default class Layout extends Component {
     return (
       <div>
         { title }
-        <LoginForm socket={socket} userLogin={this.userLogin}/>
+        <LoginForm socket={socket} setUser={this.setUser}/>
       </div>
     )
   }

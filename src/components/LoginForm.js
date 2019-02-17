@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { TextField, Paper, Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import VERIFY_USER from '../Events';
-
 
 const styles = ({
   root: {
@@ -25,28 +23,31 @@ class LoginForm extends Component {
   }
 
   handleChange = ({target: {value}}) => {
-    console.log(this.props)
+    console.log(this.props, this.props.socket.id)
     this.setState({
       name: value
     })
   }
 
+  setUser = ({isUser, user}) => {
+    console.log(user, isUser);
+    if (isUser) {
+      console.log('this name is taken')
+      this.setError('This name is taken');
+    } else {
+      console.log('This name is free')
+      this.props.setUser(user);
+    }
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     const { socket } = this.props;
-    console.log('handle submit' + socket.id)
     const { name } = this.state;
-    socket.emit(VERIFY_USER, name, this.userLogin)
+    socket.emit('VERIFY_USER', name, this.setUser);
+    console.log('after emit')
   }
 
-  userLogin = ({user, isUser}) => {
-    console.log(user, isUser);
-    if (isUser) {
-      this.setError('This name is taken');
-    } else {
-      this.props.userLogin(user);
-    }
-  }
 
   setError = (error) => {
     this.setState({error})

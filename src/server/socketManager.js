@@ -1,13 +1,13 @@
 const io = require('./index').io;
-const {VERIFY_USER} = require('../Events');
 const {createUser, createMessage, createChat} = require('../Factories');
 
 const connectedUsers = {};
 
 module.exports = function(socket) {
-  console.log('socket id' + socket.id);
+  console.log('socket id ' + socket.id);
 
-  socket.on(VERIFY_USER, (username, cb) => {
+  socket.on('VERIFY_USER', (username, cb) => {
+    console.log('And then vwrify user')
     if (isUser(connectedUsers, username)) {
       cb({isUser: true, user: null})
     } else {

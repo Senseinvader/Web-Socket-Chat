@@ -64,12 +64,16 @@ class SideBar extends Component {
             margin="normal"
           />
         </form>
-        <List>
+        <List 
+          className='users'
+          ref='users'
+          onClick={(e) => {(e.target === this.refs.users) && (setActiveChat(null))}}
+        >
           {chats.map((chat) => {
             if(chat.name) {
-              const user = chat.users.find(({name}) => {
+              const chatteeName = chat.users.find((name) => {
                 return name !== user.name
-              }) || {name: 'Community'};
+              }) || 'Community';
               const lastMessage = chat.messages[chat.messages.length - 1];
               const classNames = (activeChat && activeChat.id === chat.id) ? 'active' : '';
               return (
@@ -79,9 +83,9 @@ class SideBar extends Component {
                   onClick = { () => { setActiveChat(chat) } }
                 >
                   <Avatar>
-                    {user.name[0].toUpperCase()}
+                    {chatteeName[0].toUpperCase()}
                   </Avatar>
-                  <ListItemText primary={user.name} secondary={lastMessage} />
+                  <ListItemText primary={chatteeName} secondary={lastMessage} />
                 </ListItem>
               );
             }

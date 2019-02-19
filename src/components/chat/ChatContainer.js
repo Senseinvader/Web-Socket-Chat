@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import SideBar from './SideBar';
-import Messages from './Messages'
-import MessageInput from './MessageInput'
+import Messages from './Messages';
+import MessageInput from './MessageInput';
 import { AppBar, Toolbar, IconButton, Typography, Paper } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { withStyles } from '@material-ui/core/styles';
+import {createChat} from '../../Factories';
 
 const drawerWidth = 240;
 
@@ -23,6 +24,9 @@ const styles = theme => ({
     [theme.breakpoints.up('sm')]: {
       display: 'none',
     },
+  },
+  main: {
+    paddingTop: 200
   }
 });
 
@@ -36,6 +40,56 @@ class ChatContainer extends Component {
       activeChat: null,
       mobileOpen: false
     }
+  }
+
+  componentDidMount() {
+    const { socket } = this.props;
+    socket.emit('COMMUNITY_CHAT', this.resetChat)
+    
+    window.addEventListener("resize", this.resize);
+    this.resize();
+  }
+  
+  resize = () => {
+    let currentHideSideBar = (window.innerWidth <= 600);
+    if (currentHideSideBar !== this.state.mobileOpen) {
+        this.setState({mobileOpen: false});
+    }
+  }
+
+  resetChat = (chat) => {
+    return this.addChat(chat, true);
+  }
+
+  addChat = (chat, reset) => {
+    const { socket } = this.props;
+    const { chats } = this.state;
+    let newChats = reset ? [chat] : [...chats, chat];
+    this.setState({chats: newChats});
+    console.log(chats)
+
+    const messageEvent = `MESSAGE_SENT - ${chat.id}`;
+    const typingEvent = `TYPING - ${chat.id}`;
+
+    socket.emit(messageEvent, this.addMessageToChat(chat.id));
+    socket.emit(typingEvent, );
+  }
+
+  addMessageToChat = (chatId) => {
+    return message => {
+      const {chats} = this.state;
+      let newChats = chats.map(chat => {
+        if (chat.id === chatId) {
+          chat.messages.push(message);
+        }
+        return chat;
+      })
+      this.setState({chats: newChats});
+    }
+  }
+
+  updateTypingInChat = () => {
+
   }
 
   setActiveChat = (chat) => {
@@ -61,6 +115,15 @@ class ChatContainer extends Component {
     const { chats, activeChat, mobileOpen } = this.state;
     return (
       <div className={classes.root}>
+        <SideBar 
+          user={user}
+          logout={logout}
+          chats={chats}
+          activeChat={activeChat}
+          setActiveChat={this.setActiveChat}
+          mobileOpen={mobileOpen}
+          handleDrawerToggle={this.handleDrawerToggle}
+        />
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
             <IconButton
@@ -76,9 +139,9 @@ class ChatContainer extends Component {
             </Typography>
           </Toolbar>
         </AppBar>
-        <main>
+        <main className={classes.main}>
           {
-            activeChat ? (
+            (activeChat !== null) ? (
               <Fragment>
                 <Messages
                   messages={activeChat.messages}
@@ -94,23 +157,14 @@ class ChatContainer extends Component {
                   }}
                 />
               </Fragment>
-            ) :
+            ) : (
             <Paper>
-              h<Typography variant='h4'>Choose a chat!</Typography>
+              <Typography variant='h4'>Choose a chat!</Typography>
             </Paper>
+            )
           }
         </main>
 
-
-        <SideBar 
-          user={user}
-          logout={logout}
-          chats={chats}
-          activeChat={activeChat}
-          setActiveChat={this.setActiveChat}
-          mobileOpen={mobileOpen}
-          handleDrawerToggle={this.handleDrawerToggle}
-        />
       </div>
     )
   }

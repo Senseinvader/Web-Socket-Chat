@@ -41,8 +41,8 @@ class LoginForm extends Component {
     if (isUser) {
       this.setError('This name is taken');
     } else {
-      this.props.setUser(user);
       this.setError('');
+      this.props.setUser(user);
     }
   }
 
@@ -51,7 +51,6 @@ class LoginForm extends Component {
     const { socket } = this.props;
     const { name } = this.state;
     socket.emit('VERIFY_USER', name, this.setUser);
-    console.log('after emit')
   }
 
 

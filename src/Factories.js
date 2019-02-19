@@ -1,18 +1,20 @@
 const uuidv4 = require('uuid/v4');
 
-const createUser = ({name = ''}) => (
+const createUser = ({name = '', socketId = null}) => (
   {
     id: uuidv4(),
-    name
+    name,
+    socketId
   }
 );
 
-const createMessage = ({message = '', sender = ''} = {}) => (
+const createMessage = ({message = '', sender = '', reciever=''} = {}) => (
   {
     id: uuidv4(),
     time: getTime(new Date(Date.now())),
     message,
-    sender
+    sender,
+    reciever
   }
 );
 
